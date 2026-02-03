@@ -2,6 +2,7 @@ import asyncio
 import asyncpg
 from typing import Optional
 import logging
+from db_config import DB_CONFIG
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -47,8 +48,7 @@ class AsyncDataBaseManager:
 
         create_tables_sql = """
         CREATE TABLE IF NOT EXISTS videos(
-            id SERIAL PRIMARY KEY,
-            video_id VARCHAR(100) UNIQUE NOT NULL,
+            id VARCHAR(100) UNIQUE NOT NULL,
             video_created_at TIMESTAMP NOT NULL,
             views_count INTEGER,
             likes_count INTEGER,
@@ -71,19 +71,12 @@ class AsyncDataBaseManager:
 
             async with conn.transaction():
                 await conn.execute(create_tables_sql)
-                logger.info("Таблица создана")
+                logger.info("Таблица либо уже существовала, либо сейчас создана.")
         except Exception as e:
             logger.error("Ошибка при создании таблицы")
             raise
 
 async def setup_database():
-    DB_CONFIG = {
-        "user": "postgres",
-        "password": "admin",
-        "host": "localhost",
-        "port": "5432",
-        "database": "videos_db"
-    }
 
     db_manager = AsyncDataBaseManager(
         user = DB_CONFIG["user"],
