@@ -1,0 +1,4 @@
+alembic=="1.18.3"
+asyncpg=="0.31.0"
+SQLAlchemy=="2.0.46"
+asyncio=="4.0.0"
