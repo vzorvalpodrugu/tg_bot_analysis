@@ -2,17 +2,18 @@ import asyncio
 import asyncpg
 from typing import Optional
 import logging
-from db_config import DB_CONFIG
+from db_config import DB_CONFIG, DB_CONFIG_video_snapshots
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class AsyncDataBaseManager:
     def __init__(self,
-                 user: str = "postgres",
-                 password: str = "admin",
-                 host: str = "localhost",
-                 port: str = "5432"):
+                 user: str = DB_CONFIG["user"],
+                 password: str = DB_CONFIG["password"],
+                 host: str = DB_CONFIG["host"],
+                 port: str = DB_CONFIG["port"]
+                 ):
         self.user = user
         self.password = password
         self.host = host
@@ -29,7 +30,8 @@ class AsyncDataBaseManager:
 
         try:
             exists = await conn.fetchval(
-                "SELECT 1 FROM pg_database WHERE datname = $1", db_name
+                "SELECT 1 FROM pg_database WHERE datname = $1",
+                db_name
             )
 
             if not exists:
@@ -57,6 +59,21 @@ class AsyncDataBaseManager:
             creator_id VARCHAR(100) NOT NULL,
             created_at VARCHAR(100) NOT NULL,
             updated_at VARCHAR(100) NOT NULL
+        );
+        
+        CREATE TABLE IF NOT EXISTS video_snapshots(
+             id VARCHAR(100) UNIQUE NOT NULL,
+             video_id VARCHAR(100) NOT NULL,
+             views_count INTEGER,
+             likes_count INTEGER,
+             reports_count INTEGER,
+             comments_count INTEGER,
+             delta_views_count VARCHAR(100),
+             delta_likes_count VARCHAR(100),
+             delta_reports_count VARCHAR(100),
+             delta_comments_count VARCHAR(100),
+             created_at VARCHAR(100) NOT NULL,
+             updated_at VARCHAR(100) NOT NULL
         );
         """
 
@@ -86,9 +103,9 @@ async def setup_database():
     )
 
     try:
-        await db_manager.create_database(DB_CONFIG["database"])
+        await db_manager.create_database("tg_analysis")
 
-        await db_manager.create_tables(DB_CONFIG["database"])
+        await db_manager.create_tables("tg_analysis")
 
         logger.info("БД успешно настроена")
 
