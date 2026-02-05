@@ -2,7 +2,7 @@ import asyncio
 import asyncpg
 from typing import Optional
 import logging
-from db_config import DB_CONFIG, DB_CONFIG_video_snapshots
+from env import DB_CONFIG
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -68,10 +68,10 @@ class AsyncDataBaseManager:
              likes_count INTEGER,
              reports_count INTEGER,
              comments_count INTEGER,
-             delta_views_count VARCHAR(100),
-             delta_likes_count VARCHAR(100),
-             delta_reports_count VARCHAR(100),
-             delta_comments_count VARCHAR(100),
+             delta_views_count INTEGER,
+             delta_likes_count INTEGER,
+             delta_reports_count INTEGER,
+             delta_comments_count INTEGER,
              created_at VARCHAR(100) NOT NULL,
              updated_at VARCHAR(100) NOT NULL
         );

@@ -2,7 +2,7 @@ import json
 import asyncio
 import logging
 import asyncpg
-from db_config import DB_CONFIG
+from env import DB_CONFIG
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
